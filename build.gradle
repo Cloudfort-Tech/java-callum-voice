@@ -1,0 +1,81 @@
+plugins {
+    id 'com.android.library' version '8.11.0'
+    id 'maven-publish'
+    id 'signing'
+}
+
+android {
+    namespace 'ir.cloudfort.callum.voice'
+    compileSdk 35
+
+    defaultConfig {
+        minSdk 23
+        targetSdk 35
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'androidx.annotation:annotation:1.8.2'
+    implementation 'androidx.core:core:1.13.1'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'ir.cloudfort'
+                artifactId = 'callum-voice'
+                version = '0.0.3'
+
+                pom {
+                    name = 'Callum Voice SDK'
+                    description = 'Voice calling infrastructure for Android'
+                    url = 'https://cloudfort.ir'
+                    licenses {
+                        license {
+                            name = 'Apache License 2.0'
+                            url = 'https://www.apache.org/licenses/LICENSE-2.0'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'miladxandi'
+                            name = 'Milad Xandi'
+                            email = 'miladxandi@protonmail.com'
+                        }
+                    }
+                    scm {
+                        url = 'https://github.com/Cloudfort-Tech/java-callum-voice'
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required = false
+        sign publishing.publications.release
+    }
+}
